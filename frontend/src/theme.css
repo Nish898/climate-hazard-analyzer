@@ -1,0 +1,44 @@
+/* Theme tokens (burnt-sienna light palette). Every stylesheet references these instead of literal colours. */
+
+:root {
+  /* Surfaces */
+  --color-bg-app: #fdf6ec;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #fffaf3;
+  --color-surface-muted: #f5f0e6;
+
+  /* Text */
+  --color-heading: #3a2317;
+  --color-text: #5c4636;
+  --color-text-muted: #8a7565;
+  --color-text-faint: #a89882;
+  --color-text-faint-2: #b9a996;
+  --color-icon-muted: #7a6a58;
+
+  /* Borders */
+  --color-border: #eee0d0;
+  --color-border-soft: #f3ead9;
+  --color-border-soft-2: #f0e4d3;
+  --color-input-border: #e8dcc8;
+
+  /* Brand accents: constant across themes on purpose, they are the identity of the app. */
+  --color-accent: #e35336;
+  --color-accent-deep: #a0522d;
+  --color-accent-warm: #f4a460;
+  --color-accent-warm-text: #b56b2a;
+  --color-beige: #f5f5dc;
+  --color-badge-text: #7a4a1f;
+  --color-on-accent: #fff9f2;
+  --color-danger: #b3462c;
+
+  /* The same accents as "r, g, b" triplets for rgba(var(--x-rgb), alpha). */
+  --color-accent-rgb: 227, 83, 54;
+  --color-accent-warm-rgb: 244, 164, 96;
+  --color-accent-deep-rgb: 160, 82, 45;
+  --color-danger-rgb: 179, 70, 44;
+
+  /* Shadow base colour: shadows read as elevation against the page background. */
+  --shadow-rgb: 58, 35, 23;
+
+  color-scheme: light;
+}

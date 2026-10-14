@@ -1,0 +1,41 @@
+name: climate-hazard-analyzer
+
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    # Bound to localhost only: MongoDB has no authentication here, so it must not be reachable from the network.
+    ports: ["127.0.0.1:27017:27017"]   # for local dev (running the backend outside Docker)
+    volumes: [mongo_data:/data/db]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    env_file: .env   # all settings and secrets live in .env (see .env.example)
+    volumes: [backend_logs:/app/logs]
+    depends_on:
+      mongo: {condition: service_healthy}
+    ports: ["127.0.0.1:8000:8000"]   # the frontend reaches the backend over the Docker network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      backend: {condition: service_healthy}
+    ports: ["3000:80"]
+
+volumes:
+  mongo_data:
+  backend_logs:
