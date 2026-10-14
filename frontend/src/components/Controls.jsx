@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { searchPlaces } from "../api.js";
 import Dropdown from "./Dropdown.jsx";
 import { SearchIcon } from "./icons.jsx";
@@ -9,10 +9,15 @@ const HAZARDS = [{ value: "heatwave", label: "Heatwave" }];
 export default function Controls({ form, setForm, onSubmit, loading, maxYear }) {
   const [q, setQ] = useState("");
   const [results, setResults] = useState([]);
+  const skipSearch = useRef(false);
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
   // Debounced place search.
   useEffect(() => {
+    if (skipSearch.current) {
+      skipSearch.current = false;
+      return undefined;
+    }
     if (q.trim().length < 2) return setResults([]);
     const ctl = new AbortController(); // cancel stale searches so a slow old response can't overwrite a newer one
     const t = setTimeout(
@@ -27,8 +32,9 @@ export default function Controls({ form, setForm, onSubmit, loading, maxYear }) 
 
   const pick = (r) => {
     setForm({ ...form, lat: r.lat.toFixed(3), lon: r.lon.toFixed(3), place: [r.name, r.admin1, r.country].filter(Boolean).join(", ") });
+    skipSearch.current = true; // the name we put in the box shouldn't trigger a new search
     setResults([]);
-    setQ("");
+    setQ([r.name, r.admin1, r.country].filter(Boolean).join(", "));
   };
 
   return (
